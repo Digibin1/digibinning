@@ -1,0 +1,90 @@
+---
+title: Bird Watching
+layout: default
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bird Watching</title>
+</head>
+<body>
+
+<h1>Bird Watching</h1>
+
+<table id="birdTable" border="1">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Bird</th>
+      <th>Picture</th>
+      <th>Comment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Data will be inserted here -->
+  </tbody>
+</table>
+
+<script>
+  function loadData() {
+    fetch('birddata.json')
+      .then(response => response.json())
+      .then(data => {
+        populateTable(data);
+      })
+      .catch(error => {
+        console.error('Error loading JSON:', error);
+      });
+  }
+
+  function populateTable(data) {
+    const tbody = document.getElementById('birdTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+
+    data.forEach(entry => {
+      const row = document.createElement('tr');
+
+      // Date
+      const dateCell = document.createElement('td');
+      dateCell.textContent = entry.date;
+      row.appendChild(dateCell);
+
+      // Bird
+      const birdCell = document.createElement('td');
+      birdCell.textContent = entry.bird;
+      row.appendChild(birdCell);
+
+      // Picture
+      const pictureCell = document.createElement('td');
+      if (entry.picture) {
+        const img = document.createElement('img');
+        img.src = entry.picture;
+        img.alt = entry.bird;
+        img.style.maxWidth = '100px'; // optional styling
+        pictureCell.appendChild(img);
+      } else {
+        pictureCell.textContent = 'No image';
+      }
+      row.appendChild(pictureCell);
+
+      // Comment
+      const commentCell = document.createElement('td');
+      commentCell.textContent = entry.comment;
+      row.appendChild(commentCell);
+
+      tbody.appendChild(row);
+    });
+  }
+
+  // Load data on page load
+  window.onload = () => {
+    loadData();
+    setInterval(loadData, 60000); // refresh every 60 seconds
+  };
+</script>
+
+</body>
+</html>
